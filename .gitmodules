@@ -1,0 +1,6 @@
+[submodule "MTX/extern/spdlog"]
+	path = MTX/extern/spdlog
+	url = https://github.com/gabime/spdlog
+[submodule "MTX/extern/GLFW"]
+	path = MTX/extern/GLFW
+	url = https://github.com/glfw/glfw

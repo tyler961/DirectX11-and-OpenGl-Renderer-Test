@@ -12,7 +12,7 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 --Include directories relative to root folder (solution directory)
 
---include "VAPR/External/GLFW"
+--include "MTX/extern/GLFW"
 --include "VAPR/External/GLAD"
 --include "VAPR/External/imgui"
 
@@ -33,7 +33,10 @@ project "MTX"
 	files
 	{
 		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp"
+		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/resource.h",
+		"%{prj.name}/MTX.rc",
+		"%{prj.name}/**.hlsl"
 		--"%{prj.name}/External/GLM/glm/**.hpp",
 		--"%{prj.name}/External/GLM/glm/**.inl"
 
@@ -46,9 +49,9 @@ project "MTX"
 
 	includedirs
 	{
-		"%{prj.name}/src"
-		--"%{prj.name}/External/spdlog/include",
-		--"%{prj.name}/External/GLFW/include",
+		"%{prj.name}/src",
+		"%{prj.name}/extern/spdlog/include"
+		--"%{prj.name}/extern/GLFW/include"
 		--"%{prj.name}/External/GLAD/include",
 		--"%{prj.name}/External/imgui",
 		--"%{prj.name}/External/GLM"
@@ -56,10 +59,10 @@ project "MTX"
 
 	links
 	{
-		--"GLFW",
+		"GLFW"
 		--"GLAD",
 		--"ImGui",
-		"opengl32.lib"
+		--"opengl32.lib"
 	}
 
 	filter "system:windows"
@@ -68,24 +71,25 @@ project "MTX"
 		defines
 		{
 			"MTX_PLATFORM_WINDOWS",
+			"MTX_DIRECT3D11",
 			"MTX_BUILD_DLL",
 			"MTX_ENABLE_ASSERTS"
 			--"GLFW_INCLUDE_NONE"	
 		}
 
 	filter "configurations:Debug"
-		defines "MX_DEBUG"
+		defines "MTX_DEBUG"
 		runtime "Debug"
 		symbols "on"
 
 	filter "configurations:Release"
-		defines "MX_RELEASE"
+		defines "MTX_RELEASE"
 		runtime "Release"
 		optimize "on"
 
 project "Sandbox"
 	location "Sandbox"
-	kind "ConsoleApp"
+	kind "WindowedApp"
 	language "C++"
 	cppdialect "C++17"
 	staticruntime "on"
@@ -101,9 +105,9 @@ project "Sandbox"
 
 	includedirs
 	{
-		--"VAPR/External/spdlog/include",
-		"MTX/src"
-		--"VAPR/External",
+		"MTX/extern/spdlog/include",
+		"MTX/src",
+		--"MTX/extern"
 		--"VAPR/External/GLM"
 	}
 
@@ -117,15 +121,15 @@ project "Sandbox"
 
 		defines
 		{
-			"VP_PLATFORM_WINDOWS"		
+			"MTX_PLATFORM_WINDOWS"		
 		}
 
 	filter "configurations:Debug"
-		defines "MX_DEBUG"
+		defines "MTX_DEBUG"
 		runtime "Debug"
 		symbols "on"
 
 	filter "configurations:Release"
-		defines "MX_RELEASE"
+		defines "MTX_RELEASE"
 		runtime "Release"
 		optimize "on"
