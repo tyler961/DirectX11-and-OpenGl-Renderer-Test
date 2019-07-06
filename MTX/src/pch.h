@@ -4,6 +4,7 @@
 #include <memory>
 #include <sstream>
 #include <vector>
+
 // Used for ComPtr, smart pointer for COM objects. Because unique_ptrs call delete, and COM objects cannot, this is a simpler solution
 #include <wrl.h>
 

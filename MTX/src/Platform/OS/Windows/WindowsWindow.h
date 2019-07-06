@@ -22,7 +22,7 @@ namespace MTX {
 		inline void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
 		void SetVSync(bool enabled) override;
 		bool IsVSync() const override;
-		virtual GraphicsContext* GetContext() const override { return m_Context; }
+		virtual GraphicsContext* GetGraphicsContext() const override { return m_GraphicsContext; }
 
 		inline virtual void* GetNativeWindow() const; // { return m_Window }
 
@@ -41,7 +41,7 @@ namespace MTX {
 		HINSTANCE hInst;
 		HWND m_WindowHandle;
 		MSG m_Msg;
-		GraphicsContext* m_Context;
+		GraphicsContext* m_GraphicsContext;
 
 		struct WindowData
 		{

@@ -22,7 +22,7 @@ namespace MTX {
 	}
 
 	WindowsWindow::WindowsWindow()
-		:hInst (GetModuleHandle(nullptr)), m_WindowHandle(nullptr), m_Context(nullptr)
+		:hInst (GetModuleHandle(nullptr)), m_WindowHandle(nullptr), m_GraphicsContext(nullptr)
 	{
 		// ICONS NOT LOADING, CANT FIGURE OUT WHY
 		// POSSIBLY ADD RESOURCE TO SANDBOX????
@@ -72,8 +72,8 @@ namespace MTX {
 
 		ShowWindow(m_WindowHandle, SW_SHOW);
 
-		m_Context = new Direct3DContext(&m_WindowHandle);
-		m_Context->Init();
+		m_GraphicsContext = new Direct3DContext(&m_WindowHandle);
+		m_GraphicsContext->Init();
 
 		// Create Direct3DContext(m_Window)
 		// Init Direct3DContext
@@ -90,7 +90,7 @@ namespace MTX {
 		TranslateMessage(&m_Msg);
 		DispatchMessage(&m_Msg);
 
-		m_Context->SwapBuffers();
+		m_GraphicsContext->SwapBuffers();
 	}
 
 	void WindowsWindow::SetVSync(bool enabled)

@@ -5,6 +5,8 @@
 #include "Window.h"
 #include "Events/Event.h"
 #include "Events/ApplicationEvent.h"
+#include "Platform/GraphicsAPI/Direct3D_11/Direct3DBuffer.h"
+#include "Platform/GraphicsAPI/Direct3D_11/Direct3DShader.h"
 #include <memory>
 
 namespace MTX {
@@ -28,6 +30,9 @@ namespace MTX {
 		static Application* s_Instance;
 
 		std::unique_ptr<Window> m_Window;
+		Direct3DShader* m_Shader;
+		VertexBuffer* m_VertexBuffer;
+		Vertex m_Vertices[6];
 	};
 
 	// To be defined in client app

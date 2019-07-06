@@ -20,6 +20,27 @@ namespace MTX {
 		// Clear the screen with Direct3D
 	}
 
+	void Direct3DRendererAPI::SetRenderTarget(GraphicsContext* gfx, COMPTR(ID3D11RenderTargetView) targetView)
+	{
+		gfx->GetContext()->OMSetRenderTargets(1u, targetView.GetAddressOf(), nullptr);
+	}
+
+	void Direct3DRendererAPI::SetViewport(float width, float height, float minDepth, float maxDepth, GraphicsContext* gfx, float topX, float topY)
+	{
+		// Configure viewport (viewports map whats being draw to the actual screen) ex. the whole screen, a small section for the minimap, HUD, etc
+		// Setting up viewport is self explainatory
+		D3D11_VIEWPORT vp;
+		vp.Width = width;
+		vp.Height = height;
+		vp.MinDepth = minDepth;
+		vp.MaxDepth = maxDepth;
+		vp.TopLeftX = topX;
+		vp.TopLeftY = topY;
+
+		// Bind viewport to pipeline
+		gfx->GetContext()->RSSetViewports(1u, &vp);
+	}
+
 	void Direct3DRendererAPI::DrawIndexed()
 	{
 		// Draw vertex array with Direct3D

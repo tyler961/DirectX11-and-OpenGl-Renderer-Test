@@ -67,6 +67,11 @@
     <ClInclude Include="src\Platform\GraphicsAPI\Direct3D_11\Direct3DRendererAPI.h" />
     <ClInclude Include="src\Renderer\GraphicsContext.h" />
     <ClInclude Include="src\Platform\GraphicsAPI\Direct3D_11\Direct3DContext.h" />
+    <ClInclude Include="src\Renderer\Buffer.h" />
+    <ClInclude Include="src\Renderer\VertexArray.h" />
+    <ClInclude Include="src\Renderer\Shader.h" />
+    <ClInclude Include="src\Platform\GraphicsAPI\Direct3D_11\Direct3DShader.h" />
+    <ClInclude Include="src\Platform\GraphicsAPI\Direct3D_11\Direct3DBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\MTX\Application.cpp">
@@ -86,6 +91,11 @@
     <ClCompile Include="src\Renderer\RenderCommand.cpp" />
     <ClCompile Include="src\Platform\GraphicsAPI\Direct3D_11\Direct3DRendererAPI.cpp" />
     <ClCompile Include="src\Platform\GraphicsAPI\Direct3D_11\Direct3DContext.cpp" />
+    <ClCompile Include="src\Renderer\Buffer.cpp" />
+    <ClCompile Include="src\Renderer\VertexArray.cpp" />
+    <ClCompile Include="src\Renderer\Shader.cpp" />
+    <ClCompile Include="src\Platform\GraphicsAPI\Direct3D_11\Direct3DShader.cpp" />
+    <ClCompile Include="src\Platform\GraphicsAPI\Direct3D_11\Direct3DBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MTX.rc" />

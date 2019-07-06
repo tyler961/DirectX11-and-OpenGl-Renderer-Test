@@ -116,36 +116,41 @@
     <ClInclude Include="src\MTX\EntryPoint.h" />
     <ClInclude Include="src\MTX\Log.h" />
     <ClInclude Include="src\MTX\Window.h" />
+    <ClInclude Include="src\Platform\GraphicsAPI\Direct3D_11\Direct3DBuffer.h" />
     <ClInclude Include="src\Platform\GraphicsAPI\Direct3D_11\Direct3DContext.h" />
     <ClInclude Include="src\Platform\GraphicsAPI\Direct3D_11\Direct3DRendererAPI.h" />
+    <ClInclude Include="src\Platform\GraphicsAPI\Direct3D_11\Direct3DShader.h" />
     <ClInclude Include="src\Platform\OS\Windows\WindowsWindow.h" />
+    <ClInclude Include="src\Renderer\Buffer.h" />
     <ClInclude Include="src\Renderer\GraphicsContext.h" />
     <ClInclude Include="src\Renderer\RenderCommand.h" />
     <ClInclude Include="src\Renderer\Renderer.h" />
     <ClInclude Include="src\Renderer\RendererAPI.h" />
+    <ClInclude Include="src\Renderer\Shader.h" />
+    <ClInclude Include="src\Renderer\VertexArray.h" />
     <ClInclude Include="src\WindowsInclude.h" />
     <ClInclude Include="src\pch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\MTX\Application.cpp" />
     <ClCompile Include="src\MTX\Log.cpp" />
+    <ClCompile Include="src\Platform\GraphicsAPI\Direct3D_11\Direct3DBuffer.cpp" />
     <ClCompile Include="src\Platform\GraphicsAPI\Direct3D_11\Direct3DContext.cpp" />
     <ClCompile Include="src\Platform\GraphicsAPI\Direct3D_11\Direct3DRendererAPI.cpp" />
+    <ClCompile Include="src\Platform\GraphicsAPI\Direct3D_11\Direct3DShader.cpp" />
     <ClCompile Include="src\Platform\OS\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\Renderer\Buffer.cpp" />
     <ClCompile Include="src\Renderer\RenderCommand.cpp" />
     <ClCompile Include="src\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Renderer\RendererAPI.cpp" />
+    <ClCompile Include="src\Renderer\Shader.cpp" />
+    <ClCompile Include="src\Renderer\VertexArray.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MTX.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="extern\GLFW\GLFW.vcxproj">
-      <Project>{154B857C-0182-860D-AA6E-6C109684020F}</Project>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="src\Platform\GraphicsAPI\Direct3D_11\PixelShader.hlsl">
@@ -159,6 +164,8 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)%(Filename).cso</ObjectFileOutput>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

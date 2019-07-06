@@ -1,7 +1,12 @@
 #include "pch.h"
 #include "Direct3DContext.h"
 #include "MTX/Core.h"
+#include "Direct3DShader.h"
+#include "Direct3DBuffer.h"
+#include "Renderer/Buffer.h"
+#include "Direct3DRendererAPI.h"
 #include <d3dcompiler.h>
+
 
 // Add static libaray here, maybe add to project settings later
 #pragma comment(lib, "d3d11.lib")
@@ -43,7 +48,7 @@ namespace MTX {
 			nullptr,
 			D3D_DRIVER_TYPE_HARDWARE,
 			nullptr,
-			0,
+			D3D11_CREATE_DEVICE_DEBUG,
 			nullptr,
 			0,
 			D3D11_SDK_VERSION,
@@ -75,162 +80,45 @@ namespace MTX {
 
 	void Direct3DContext::TmpDraw()
 	{
-		// from m_Context, funtions beginnings coorispond with the pipeline for Direct3D 11. (msdn pipelines for direc3d version 11)
-		// IA: Input Assembler
-		// VS: Vertex Shader
-		// HS: Hull Shader
-		// DS: Domain Shader
-		// GS: Geometry Shader
-		// PS: Pixel Shader
-		// OM: Output Merger
-		// RS: Rasterizer Stage
+		//// Array of vertices to plot the points
+		//const Vertex vertices[] =
+		//{
+		//	{  0.0f,  0.5f },	// top of triangle
+		//	{  0.5f, -0.5f },   // right corner
+		//	{ -0.5f, -0.5f }    // left corner
+		//};
 
-		// Simple struct to hold vertex values
-		struct Vertex 
-		{
-			float x, y;
-		};
+		//// Vertex Buffer
+		//VertexBuffer* VertexBuffer = VertexBuffer::Create(vertices, sizeof(vertices), this);
 
-		// Array of vertices to plot the points
-		const Vertex vertices[] =
-		{
-			{  0.0f,  0.5f },	// top of triangle
-			{  0.5f, -0.5f },   // right corner
-			{ -0.5f, -0.5f }    // left corner
-		};
+		//// Create shader binaries, create shaders, set shaders
+		//Direct3DShader shader(L"C:/dev/MTX_Engine/MTX/VertexShader.cso", L"C:/dev/MTX_Engine/MTX/PixelShader.cso", this);
 
-		// Vertex Buffer
-		COMPTR(ID3D11Buffer) vertexBuffer;
+		//// Create Layout for Vertex Shader (MUST CREATE VERTEX SHADER FIRST)
+		//VertexBuffer->SetLayout("Position", ShaderDataType::Float2, this, &shader);
 
-		// Buffer Descriptor:
-		// UINT ByteWidth				Size in bytes
-		// D3D11_USAGE Usage			Look up values if needed, most common is D3D11_USAGE_DEFAULT (Allows reading and writing access by the GPU)
-		// UINT BindFlags				How it's going to be bound to the buffer (D3D11_BIND_VERTEX_BUFFER, Index_Buffer, Shader_Resource, Constant_Buffer etc) (msdn d3d11_bind_flag enumeration for lookup)
-		// UINT CPUAccessFlags			0 to not allow the cpu access, additional flags for d3d11_cpu_access_flag
-		// UINT MiscFlags				Not using any for triangle drawing, for future reference d3d11_resource_misc_flag
-		// UINT StructureByteStride		The size of every vertex in the structure in bytes
-		D3D11_BUFFER_DESC bd = {};
-		bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		bd.Usage = D3D11_USAGE_DEFAULT;
-		bd.CPUAccessFlags = 0u;
-		bd.MiscFlags = 0u;
-		bd.ByteWidth = sizeof(vertices);
-		bd.StructureByteStride = sizeof(Vertex);
+		//// Bind render TargetView
+		//// When getting a pointer to a pointer it automatically frees the old pointer. Ex. &blob frees the old blob and retargets it
+		//// Hence we don't want to free the targetview, so we use m_TargetView.GetAddressOf();
+		//m_Context->OMSetRenderTargets(1u, m_TargetView.GetAddressOf(), nullptr);
 
-		// D3D11_SUBRESOURCE_DATA, only thing we care about filling out in that structure is a const void* that points to our data. other two things only have to do with textures, nothing else
-		D3D11_SUBRESOURCE_DATA sd = {};
-		sd.pSysMem = vertices;
+		//// Set primitive topology to triangle list (so it knows how to draw the vertices we've given it
+		//m_Context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-		// Creates all kinds of buffers that you want
-		// V1: Descriptor of the kind of buffer you want to create
-		// V2: D3D11_SUBRESOURCE_DATA, only thing we care about filling out in that structure is a const void* that points to our data. other two things only have to do with textures, nothing else
-		// V3: The object to fill with the vertex buffer, in this case a D3D11Buffer*
-		HRESULT hr = m_Device->CreateBuffer(&bd, &sd, &vertexBuffer);
-		if (hr != S_OK)
-			MTX_CORE_ERROR("m_Device->CreateBuffer Failed!!!");
-
-		// V1: Where to start in your array of buffers
-		// V2: Number of vertex buffers in your vertex buffer array 
-		// V3: The array of vertex buffers. It takes in a pointer to an array of vertex buffer pointers
-		// V4: Strides, the distance between the vertexes in bytes
-		// V5: Pointer to an array of offset values, where to start in each buffer in the array
-		// Bind vertex buffer to pipeline
-		const UINT stride = sizeof(Vertex);
-		const UINT offset = 0u;
-		m_Context->IASetVertexBuffers(0u, 1u, vertexBuffer.GetAddressOf(), &stride, &offset);
-
-		////////////////////////////////////////////////////////
-		// VertexShader ////////////////////////////////////////
-		////////////////////////////////////////////////////////
-
-		// Create vertex shader
-		COMPTR(ID3D11VertexShader) vertexShader;
-		COMPTR(ID3DBlob) blob;
-
-		// Reads from the compiled binary for vertexshader.hlsl
-		hr = D3DReadFileToBlob(L"C:/dev/MTX_Engine/MTX/VertexShader.cso", &blob);
-		if (hr != S_OK)
-			MTX_CORE_ERROR("Error loading VertexShader.cso");
-
-		// Creates the vertexshader with the information we've provided
-		hr = m_Device->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &vertexShader);
-		if (hr != S_OK)
-			MTX_CORE_ERROR("Error creating VertexShader");
-
-		// Bind vertexshader to pipeline
-		m_Context->VSSetShader(vertexShader.Get(), nullptr, 0u);
-
-		// HAVE TO CREATE VERTEX SHADER FIRST!!!!!!!!!!!!
-		// Input(vertex) layout (2d position only)
-		// Describes the input layout for our Struct Vertex
-		// Layout:
-		// Semantic Name, Semantic Index, Format, Input slot, AlignedByteOffset, InputSlotClass, InstanceDataSetRate
-		COMPTR(ID3D11InputLayout) inputLayout;
-		const D3D11_INPUT_ELEMENT_DESC ied[] =
-		{
-			{"Position", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 }
-			// From format, R32G32 means we have two 32 floats in our struct
-		};
-		// CreateInputLayout
-		// const D3D11_INPUT_ELEMENT_DESC *pInputElementDescs	Input element desc
-		// UINT NumElements										Number of elements
-		// const void *pShaderBytecodeWithInputSignature		Byte code of a vertex shader
-		// SIZE_T BytecodeLength								Length of that bytecode
-		// ID3D11InputLayout **ppInputLayout					Our input layout we created
-		hr = m_Device->CreateInputLayout(
-			ied, (UINT)std::size(ied),
-			blob->GetBufferPointer(),
-			blob->GetBufferSize(),
-			&inputLayout
-		);
-		if (hr != S_OK)
-			MTX_CORE_ERROR("Error creating Input Layout!!!");
-
-		// Bind InputLayout
-		m_Context->IASetInputLayout(inputLayout.Get());
+		//// Configure viewport (viewports map whats being draw to the actual screen) ex. the whole screen, a small section for the minimap, HUD, etc
+		//// Setting up viewport is self explainatory
+		//D3D11_VIEWPORT vp;
+		//vp.Width = 1920;
+		//vp.Height = 1080;
+		//vp.MinDepth = 0;
+		//vp.MaxDepth = 1;
+		//vp.TopLeftX = 0;
+		//vp.TopLeftY = 0;
+		//// Bind viewport to pipeline
+		//m_Context->RSSetViewports(1u, &vp);
 
 
-		////////////////////////////////////////////////////////
-		// PixelShader /////////////////////////////////////////
-		////////////////////////////////////////////////////////
-
-		// Create PixelShader
-		COMPTR(ID3D11PixelShader) pixelShader;
-		// Reuse blob from before
-		hr = D3DReadFileToBlob(L"C:/dev/MTX_Engine/MTX/PixelShader.cso", &blob);
-		if (hr != S_OK)
-			MTX_CORE_ERROR("Error loading PixelShader.cso");
-
-		// Creates the pixelshader with the information we've provided
-		hr = m_Device->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &pixelShader);
-		if (hr != S_OK)
-			MTX_CORE_ERROR("Error creating PixelShader");
-
-		// Bind vertexshader to pipeline
-		m_Context->PSSetShader(pixelShader.Get(), nullptr, 0u);
-
-		// Bind render TargetView
-		// When getting a pointer to a pointer it automatically frees the old pointer. Ex. &blob frees the old blob and retargets it
-		// Hence we don't want to free the targetview, so we use m_TargetView.GetAddressOf();
-		m_Context->OMSetRenderTargets(1u, m_TargetView.GetAddressOf(), nullptr);
-
-		// Set primitive topology to triangle list (so it knows how to draw the vertices we've given it
-		m_Context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-		// Configure viewport (viewports map whats being draw to the actual screen) ex. the whole screen, a small section for the minimap, HUD, etc
-		// Setting up viewport is self explainatory
-		D3D11_VIEWPORT vp;
-		vp.Width = 1920;
-		vp.Height = 1080;
-		vp.MinDepth = 0;
-		vp.MaxDepth = 1;
-		vp.TopLeftX = 0;
-		vp.TopLeftY = 0;
-		// Bind viewport to pipeline
-		m_Context->RSSetViewports(1u, &vp);
-
-
-		// Number of vertices, which one to start with, draw them
-		m_Context->Draw( (UINT)std::size(vertices), 0u);
+		//// Number of vertices, which one to start with, draw them
+		//m_Context->Draw( (UINT)std::size(vertices), 0u);
 	}
 }
