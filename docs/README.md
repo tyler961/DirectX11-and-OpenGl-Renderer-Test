@@ -5,5 +5,5 @@ Currently only displays a triangle. I have wrappers around the OpenGL and direct
 Also have basic I/O from the os.
 
 
-![Preivew](images/display.png)
+![Preivew](/images/display.png)
 
